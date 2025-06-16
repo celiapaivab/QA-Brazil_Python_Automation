@@ -1,6 +1,6 @@
 import data
 import helpers
-
+from selenium import webdriver
 
 class TestUrbanRoutes:
 
@@ -11,6 +11,11 @@ class TestUrbanRoutes:
         else:
             print("Não foi possível conectar ao Urban Routes. Verifique se o servidor está ligado e ainda em execução.")
 
+        # não modifique, pois precisamos do registro adicional habilitado para recuperar o código de confirmação do telefone
+        from selenium.webdriver import DesiredCapabilities
+        capabilities = DesiredCapabilities.CHROME
+        capabilities["goog:loggingPrefs"] = {'performance': 'ALL'}
+        cls.driver = webdriver.Chrome()
 
     def test_set_route(self):
         # Adicionar em S8
@@ -52,3 +57,7 @@ class TestUrbanRoutes:
         # Adicionar em S8
         print("Função criada para pesquisar se o modelo do carro aparece")
         pass
+
+    @classmethod
+    def teardown_class(cls):
+        cls.driver.quit()
