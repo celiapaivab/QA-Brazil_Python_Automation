@@ -18,11 +18,12 @@ class UrbanRoutesPage:
     SMS_CODE_INPUT = (By.XPATH, '//div[contains(@class, "modal")]//div[contains(@class, "section") and contains(@class, "active")]//input[@id="code"]')
     SMS_CONFIRM = (By.XPATH, '//button[@type="submit" and text()="Confirmar"]')
     PHONE_FIELD_AFTER = (By.CSS_SELECTOR, "div.np-button.filled > div.np-text")
-    PAYMENT_FIELD = (By.XPATH, '//div[contains(@class, "pp-button")]//div[@class="pp-text" and text()="Método de pagamento"]')
+    PAYMENT_FIELD = (By.CSS_SELECTOR, 'div.pp-button div.pp-text')
     PAYMENT_CARD_OPTION = (By.XPATH, '//div[@class="pp-title" and text()="Adicionar cartão"]')
     CARD_NUMBER_INPUT = (By.ID, "number")
     CARD_CODE_INPUT = (By.XPATH, '//div[contains(@class, "section") and contains(@class, "active")]//input[@id="code"]')
     CARD_ADD_BUTTON = (By.XPATH, '//button[@type="submit" and text()="Adicionar"]')
+    PAYMENT_FIELD_VALUE = (By.CSS_SELECTOR, "div.pp-button.filled div.pp-value-text")
     COMMENT_INPUT = (By.ID, "comment")
     BLANKET_OPTION = (By.XPATH, '//div[@class="r-sw-label" and text()="Cobertor e lençóis"]/following-sibling::div//input[@type="checkbox"]')
     ICE_CREAM_OPTION = (By.XPATH, '//div[@class="r-counter-label" and text()="Sorvete"]/following-sibling::div//div[@class="counter-plus"]')
@@ -120,20 +121,28 @@ class UrbanRoutesPage:
         add_btn = self.wait.until(EC.element_to_be_clickable(self.CARD_ADD_BUTTON))
         add_btn.click()
 
+    def get_payment_method_text(self):
+        pay_field = self.wait.until(EC.visibility_of_element_located(self.PAYMENT_FIELD_VALUE))
+        return pay_field.text
+
+    # TEST COMMENT
     def comment_for_driver(self, comment):
         comment_input = self.wait.until(EC.visibility_of_element_located(self.COMMENT_INPUT))
         comment_input.send_keys(comment)
 
+    # TEST
     def order_blanket_and_handkerchiefs(self):
         checkbox = self.wait.until(EC.element_to_be_clickable(self.BLANKET_OPTION))
         checkbox.click()
         return checkbox
 
+    # TEST
     def order_ice_creams(self, quantity=2):
         for _ in range(quantity):
             plus_btn = self.wait.until(EC.element_to_be_clickable(self.ICE_CREAM_OPTION))
             plus_btn.click()
 
+    # TEST
     def click_final_call_taxi_button(self):
         call_btn = self.wait.until(EC.element_to_be_clickable(self.FINAL_CALL_TAXI_BUTTON))
         call_btn.click()

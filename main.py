@@ -30,8 +30,11 @@ class TestUrbanRoutes:
         assert self.page.get_to_location_value() == data.ADDRESS_TO, f"Endereço de destino incorreto. Esperado: {data.ADDRESS_TO}, Encontrado: {self.page.get_to_location_value()}"
 
     def test_select_plan(self):
+        # Teste anterior
         self.page.enter_from_location(data.ADDRESS_FROM)
         self.page.enter_to_location(data.ADDRESS_TO)
+
+        # Teste para selecionar o plano
         self.page.select_personal_mode()
         self.page.select_taxi_type()
         self.page.click_call_taxi()
@@ -39,12 +42,15 @@ class TestUrbanRoutes:
         assert self.page.get_selected_plan() == "Comfort", "O plano Comfort não foi selecionado corretamente."
 
     def test_fill_phone_number(self):
+        # Teste anterior
         self.page.enter_from_location(data.ADDRESS_FROM)
         self.page.enter_to_location(data.ADDRESS_TO)
         self.page.select_personal_mode()
         self.page.select_taxi_type()
         self.page.click_call_taxi()
         self.page.select_comfort_plan()
+
+        # Teste para preencher o  número de telefone
         self.page.click_phone_field()
         self.page.enter_phone_number(data.PHONE_NUMBER)
         self.page.submit_phone()
@@ -56,9 +62,28 @@ class TestUrbanRoutes:
         assert displayed_number == data.PHONE_NUMBER, f"Número exibido incorreto: {displayed_number}"
 
     def test_fill_card(self):
-        # Adicionar em S8
-        print("Função criada para preencher o cartão")
-        pass
+        # Teste anterior
+        self.page.enter_from_location(data.ADDRESS_FROM)
+        self.page.enter_to_location(data.ADDRESS_TO)
+        self.page.select_personal_mode()
+        self.page.select_taxi_type()
+        self.page.click_call_taxi()
+        self.page.select_comfort_plan()
+        self.page.click_phone_field()
+        self.page.enter_phone_number(data.PHONE_NUMBER)
+        self.page.submit_phone()
+        sms_code = helpers.retrieve_phone_code(self.driver)
+        self.page.enter_sms_code(sms_code)
+        self.page.confirm_sms_code()
+
+        # Teste para preencher o cartão
+        self.page.open_payment_field()
+        self.page.choose_add_card()
+        self.page.enter_card_number(data.CARD_NUMBER)
+        self.page.enter_card_cvv(data.CARD_CODE)
+        self.page.submit_card()
+        payment_method = self.page.get_payment_method_text()
+        assert payment_method == "Cartão", f"Método de pagamento incorreto exibido: {payment_method}"
 
     def test_comment_for_driver(self):
         # Adicionar em S8
