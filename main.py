@@ -1,6 +1,7 @@
 import data
 import helpers
 from selenium import webdriver
+from pages import UrbanRoutesPage
 
 class TestUrbanRoutes:
 
@@ -17,19 +18,25 @@ class TestUrbanRoutes:
         capabilities["goog:loggingPrefs"] = {'performance': 'ALL'}
         cls.driver = webdriver.Chrome()
 
+        cls.driver.get(data.URBAN_ROUTES_URL)
+        cls.page = UrbanRoutesPage(cls.driver)
+
     def test_set_route(self):
-        # Adicionar em S8
-        print("Função criada para definir a rota")
-        pass
+        self.page.enter_from_location(data.ADDRESS_FROM)
+        self.page.enter_to_location (data.ADDRESS_TO)
+        assert self.page.get_from_location_value() == data.ADDRESS_FROM
+        assert self.page.get_to_location_value() == data.ADDRESS_TO
 
     def test_select_plan(self):
-        # Adicionar em S8
-        print("Função criada para selecionar o plano")
-        pass
+        self.page.enter_from_location(data.ADDRESS_FROM)
+        self.page.enter_to_location(data.ADDRESS_TO)
+        self.page.select_personal_mode()
+        self.page.select_taxi_type()
+        self.page.click_call_taxi()
+        self.page.select_comfort_plan()
+        assert self.page.get_selected_plan() == "Comfort", "O plano Comfort não foi selecionado corretamente."
 
     def test_fill_phone_number(self):
-        # Adicionar em S8
-        print("Função criada para preencher o número de telefone")
         pass
 
     def test_fill_card(self):

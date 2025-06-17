@@ -1,3 +1,4 @@
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,9 +8,10 @@ class UrbanRoutesPage:
     FROM_INPUT = (By.ID, "from")
     TO_INPUT = (By.ID, "to")
     PERSONAL_OPTION = (By.XPATH, '//div[@class="mode" and text()="Personal"]')
-    TAXI_OPTION = (By.XPATH, '//div[@class="type"]//img[contains(@src, "taxi")]')
+    TAXI_OPTION = (By.XPATH, '//div[contains(@class, "type") and .//img[contains(@src, "taxi")]]')
     CALL_TAXI_BUTTON = (By.XPATH, '//button[contains(@class, "button") and contains(@class, "round") and text()="Chamar um táxi"]')
-    COMFORT_BUTTON = (By.XPATH, '//button[@data-for="tariff-card-4"]')
+    COMFORT_OPTION = (By.XPATH, "//div[contains(@class, 'tcard') and .//button[@data-for='tariff-card-4']]")
+    COMFORT_TITLE = (By.XPATH, "//div[contains(@class, 'tcard-title') and text()='Comfort']")
     PHONE_FIELD = (By.XPATH, '//div[@class="np-button"]//div[@class="np-text" and text()="Número de telefone"]')
     PHONE_INPUT = (By.ID, "phone")
     PHONE_SUBMIT = (By.XPATH, '//button[@type="submit" and text()="Próximo"]')
@@ -24,44 +26,112 @@ class UrbanRoutesPage:
     BLANKET_OPTION = (By.XPATH, '//div[@class="r-sw-label" and text()="Cobertor e lençóis"]/following-sibling::div//input[@type="checkbox"]')
     ICE_CREAM_OPTION = (By.XPATH, '//div[@class="r-counter-label" and text()="Sorvete"]/following-sibling::div//div[@class="counter-plus"]')
     FINAL_CALL_TAXI_BUTTON = (By.XPATH, '//button[@class="smart-button"]')
+    SEARCH_MODAL = (By.XPATH, '//div[contains(@class, "searching-car")]')
 
     def __init__(self, driver):
         self.driver = driver
+        self.wait = WebDriverWait(driver, 3)
 
-    def set_route(self, from_location, to_location):
-        self.driver.find_element(*self.FROM_INPUT).send_keys(from_location)
-        self.driver.find_element(*self.TO_INPUT).send_keys(to_location)
-        self.driver.find_element(*self.PERSONAL_OPTION).click()
-        self.driver.find_element(*self.TAXI_OPTION).click()
+    # SET ROUTE
+    def enter_from_location(self, from_location):
+        from_input = self.wait.until(EC.visibility_of_element_located(self.FROM_INPUT))
+        from_input.send_keys(from_location)
 
-    def select_plan(self):
-        self.driver.find_element(*self.CALL_TAXI_BUTTON).click()
-        self.driver.find_element(*self.COMFORT_BUTTON).click()
+    def enter_to_location(self, to_location):
+        to_input = self.wait.until(EC.visibility_of_element_located(self.TO_INPUT))
+        to_input.send_keys(to_location)
 
-    def fill_phone_number(self, phone, sms_code):
-        self.driver.find_element(*self.PHONE_FIELD).click()
-        self.driver.find_element(*self.PHONE_INPUT).send_keys(phone)
-        self.driver.find_element(*self.PHONE_SUBMIT).click()
-        self.driver.find_element(*self.SMS_CODE_INPUT).send_keys(sms_code)
-        self.driver.find_element(*self.SMS_CONFIRM).click()
+    def get_from_location_value(self):
+        from_input = self.driver.find_element(*self.FROM_INPUT)
+        return from_input.get_attribute("value")
 
-    def fill_card(self, card_number, card_code):
-        self.driver.find_element(*self.PAYMENT_FIELD).click()
-        self.driver.find_element(*self.PAYMENT_CARD_OPTION).click()
-        self.driver.find_element(*self.CARD_NUMBER_INPUT).send_keys(card_number)
-        self.driver.find_element(*self.CARD_CODE_INPUT).send_keys(card_code)
-        self.driver.find_element(*self.CARD_ADD_BUTTON).click()
+    def get_to_location_value(self):
+        to_input = self.driver.find_element(*self.TO_INPUT)
+        return to_input.get_attribute("value")
+
+    # SELECT PLAN
+    def select_personal_mode(self):
+        personal = self.wait.until(EC.element_to_be_clickable(self.PERSONAL_OPTION))
+        personal.click()
+
+    def select_taxi_type(self):
+        taxi_div = self.wait.until(EC.visibility_of_element_located(self.TAXI_OPTION))
+        if "active" not in taxi_div.get_attribute("class"):
+            taxi_div.click()
+
+    def click_call_taxi(self):
+        button = self.wait.until(EC.element_to_be_clickable(self.CALL_TAXI_BUTTON))
+        button.click()
+
+    def select_comfort_plan(self):
+        comfort = self.wait.until(EC.visibility_of_element_located(self.COMFORT_OPTION))
+        if "active" not in comfort.get_attribute("class"):
+            comfort.click()
+
+    def get_selected_plan(self):
+        comfort_title = self.driver.find_element(*self.COMFORT_TITLE)
+        return comfort_title.text
+
+    # FILL PHONE NUMBER
+    def click_phone_field(self):
+        field = self.wait.until(EC.element_to_be_clickable(self.PHONE_FIELD))
+        field.click()
+
+    def enter_phone_number(self, phone):
+        phone_input = self.wait.until(EC.visibility_of_element_located(self.PHONE_INPUT))
+        phone_input.send_keys(phone)
+
+    def submit_phone(self):
+        submit_btn = self.wait.until(EC.element_to_be_clickable(self.PHONE_SUBMIT))
+        submit_btn.click()
+
+    def enter_sms_code(self, sms_code):
+        code_input = self.wait.until(EC.visibility_of_element_located(self.SMS_CODE_INPUT))
+        code_input.send_keys(sms_code)
+
+    def confirm_sms_code(self):
+        confirm_btn = self.wait.until(EC.element_to_be_clickable(self.SMS_CONFIRM))
+        confirm_btn.click()
+
+    def open_payment_field(self):
+        payment = self.wait.until(EC.element_to_be_clickable(self.PAYMENT_FIELD))
+        payment.click()
+
+    def choose_add_card(self):
+        add_card = self.wait.until(EC.element_to_be_clickable(self.PAYMENT_CARD_OPTION))
+        add_card.click()
+
+    def enter_card_number(self, card_number):
+        number_input = self.wait.until(EC.visibility_of_element_located(self.CARD_NUMBER_INPUT))
+        number_input.send_keys(card_number)
+
+    def enter_card_cvv(self, card_cvv):
+        cvv_input = self.wait.until(EC.visibility_of_element_located(self.CARD_CODE_INPUT))
+        cvv_input.send_keys(card_cvv)
+        cvv_input.send_keys(Keys.TAB)
+
+    def submit_card(self):
+        add_btn = self.wait.until(EC.element_to_be_clickable(self.CARD_ADD_BUTTON))
+        add_btn.click()
 
     def comment_for_driver(self, comment):
-        self.driver.find_element(*self.COMMENT_INPUT).send_keys(comment)
+        comment_input = self.wait.until(EC.visibility_of_element_located(self.COMMENT_INPUT))
+        comment_input.send_keys(comment)
 
     def order_blanket_and_handkerchiefs(self):
-        self.driver.find_element(*self.BLANKET_OPTION).click()
+        checkbox = self.wait.until(EC.element_to_be_clickable(self.BLANKET_OPTION))
+        checkbox.click()
+        return checkbox
 
-    def order_ice_creams(self, quantity):
+    def order_ice_creams(self, quantity=2):
         for _ in range(quantity):
-            self.driver.find_element(*self.ICE_CREAM_OPTION).click()
+            plus_btn = self.wait.until(EC.element_to_be_clickable(self.ICE_CREAM_OPTION))
+            plus_btn.click()
 
-    def finalize_order(self):
-        self.driver.find_element(*self.FINAL_CALL_TAXI_BUTTON).click()
+    def click_final_call_taxi_button(self):
+        call_btn = self.wait.until(EC.element_to_be_clickable(self.FINAL_CALL_TAXI_BUTTON))
+        call_btn.click()
 
+    def wait_for_search_modal(self):
+        modal = self.wait.until(EC.visibility_of_element_located(self.SEARCH_MODAL))
+        return modal
