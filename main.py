@@ -2,6 +2,8 @@ import data
 import helpers
 from selenium import webdriver
 from pages import UrbanRoutesPage
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class TestUrbanRoutes:
 
@@ -24,8 +26,8 @@ class TestUrbanRoutes:
     def test_set_route(self):
         self.page.enter_from_location(data.ADDRESS_FROM)
         self.page.enter_to_location (data.ADDRESS_TO)
-        assert self.page.get_from_location_value() == data.ADDRESS_FROM
-        assert self.page.get_to_location_value() == data.ADDRESS_TO
+        assert self.page.get_from_location_value() == data.ADDRESS_FROM, f"Endereço de origem incorreto. Esperado: {data.ADDRESS_FROM}, Encontrado: {self.page.get_from_location_value()}"
+        assert self.page.get_to_location_value() == data.ADDRESS_TO, f"Endereço de destino incorreto. Esperado: {data.ADDRESS_TO}, Encontrado: {self.page.get_to_location_value()}"
 
     def test_select_plan(self):
         self.page.enter_from_location(data.ADDRESS_FROM)
@@ -37,7 +39,21 @@ class TestUrbanRoutes:
         assert self.page.get_selected_plan() == "Comfort", "O plano Comfort não foi selecionado corretamente."
 
     def test_fill_phone_number(self):
-        pass
+        self.page.enter_from_location(data.ADDRESS_FROM)
+        self.page.enter_to_location(data.ADDRESS_TO)
+        self.page.select_personal_mode()
+        self.page.select_taxi_type()
+        self.page.click_call_taxi()
+        self.page.select_comfort_plan()
+        self.page.click_phone_field()
+        self.page.enter_phone_number(data.PHONE_NUMBER)
+        self.page.submit_phone()
+        sms_code = helpers.retrieve_phone_code(self.driver)
+        assert sms_code, "Não foi possível recuperar o código SMS"
+        self.page.enter_sms_code(sms_code)
+        self.page.confirm_sms_code()
+        displayed_number = self.page.get_displayed_phone_number()
+        assert displayed_number == data.PHONE_NUMBER, f"Número exibido incorreto: {displayed_number}"
 
     def test_fill_card(self):
         # Adicionar em S8

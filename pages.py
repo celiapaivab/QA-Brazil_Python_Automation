@@ -9,14 +9,15 @@ class UrbanRoutesPage:
     TO_INPUT = (By.ID, "to")
     PERSONAL_OPTION = (By.XPATH, '//div[@class="mode" and text()="Personal"]')
     TAXI_OPTION = (By.XPATH, '//div[contains(@class, "type") and .//img[contains(@src, "taxi")]]')
-    CALL_TAXI_BUTTON = (By.XPATH, '//button[contains(@class, "button") and contains(@class, "round") and text()="Chamar um táxi"]')
+    CALL_TAXI_BUTTON = (By.CSS_SELECTOR, 'button.button.round')
     COMFORT_OPTION = (By.XPATH, "//div[contains(@class, 'tcard') and .//button[@data-for='tariff-card-4']]")
     COMFORT_TITLE = (By.XPATH, "//div[contains(@class, 'tcard-title') and text()='Comfort']")
-    PHONE_FIELD = (By.XPATH, '//div[@class="np-button"]//div[@class="np-text" and text()="Número de telefone"]')
+    PHONE_FIELD = (By.CSS_SELECTOR, "div.np-button > div.np-text")
     PHONE_INPUT = (By.ID, "phone")
     PHONE_SUBMIT = (By.XPATH, '//button[@type="submit" and text()="Próximo"]')
     SMS_CODE_INPUT = (By.XPATH, '//div[contains(@class, "modal")]//div[contains(@class, "section") and contains(@class, "active")]//input[@id="code"]')
     SMS_CONFIRM = (By.XPATH, '//button[@type="submit" and text()="Confirmar"]')
+    PHONE_FIELD_AFTER = (By.CSS_SELECTOR, "div.np-button.filled > div.np-text")
     PAYMENT_FIELD = (By.XPATH, '//div[contains(@class, "pp-button")]//div[@class="pp-text" and text()="Método de pagamento"]')
     PAYMENT_CARD_OPTION = (By.XPATH, '//div[@class="pp-title" and text()="Adicionar cartão"]')
     CARD_NUMBER_INPUT = (By.ID, "number")
@@ -93,6 +94,11 @@ class UrbanRoutesPage:
         confirm_btn = self.wait.until(EC.element_to_be_clickable(self.SMS_CONFIRM))
         confirm_btn.click()
 
+    def get_displayed_phone_number(self):
+        phone_field = self.wait.until(EC.visibility_of_element_located(self.PHONE_FIELD_AFTER))
+        return phone_field.text.strip()
+
+    # FILL PHONE NUMBER
     def open_payment_field(self):
         payment = self.wait.until(EC.element_to_be_clickable(self.PAYMENT_FIELD))
         payment.click()
