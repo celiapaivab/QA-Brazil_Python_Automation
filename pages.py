@@ -130,6 +130,10 @@ class UrbanRoutesPage:
         comment_input = self.wait.until(EC.visibility_of_element_located(self.COMMENT_INPUT))
         comment_input.send_keys(comment)
 
+    def get_comment_for_driver(self):
+        comment_input = self.wait.until(EC.visibility_of_element_located(self.COMMENT_INPUT))
+        return comment_input.get_attribute("value")
+
     # TEST
     def order_blanket_and_handkerchiefs(self):
         checkbox = self.wait.until(EC.element_to_be_clickable(self.BLANKET_OPTION))

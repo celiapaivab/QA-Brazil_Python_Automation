@@ -26,8 +26,8 @@ class TestUrbanRoutes:
     def test_set_route(self):
         self.page.enter_from_location(data.ADDRESS_FROM)
         self.page.enter_to_location (data.ADDRESS_TO)
-        assert self.page.get_from_location_value() == data.ADDRESS_FROM, f"Endereço de origem incorreto. Esperado: {data.ADDRESS_FROM}, Encontrado: {self.page.get_from_location_value()}"
-        assert self.page.get_to_location_value() == data.ADDRESS_TO, f"Endereço de destino incorreto. Esperado: {data.ADDRESS_TO}, Encontrado: {self.page.get_to_location_value()}"
+        assert self.page.get_from_location_value() == data.ADDRESS_FROM, "Endereço de origem incorreto."
+        assert self.page.get_to_location_value() == data.ADDRESS_TO, "Endereço de destino incorreto."
 
     def test_select_plan(self):
         # Teste anterior
@@ -58,8 +58,7 @@ class TestUrbanRoutes:
         assert sms_code, "Não foi possível recuperar o código SMS"
         self.page.enter_sms_code(sms_code)
         self.page.confirm_sms_code()
-        displayed_number = self.page.get_displayed_phone_number()
-        assert displayed_number == data.PHONE_NUMBER, f"Número exibido incorreto: {displayed_number}"
+        assert self.page.get_displayed_phone_number() == data.PHONE_NUMBER, f"Número exibido incorreto: {displayed_number}"
 
     def test_fill_card(self):
         # Teste anterior
@@ -82,13 +81,31 @@ class TestUrbanRoutes:
         self.page.enter_card_number(data.CARD_NUMBER)
         self.page.enter_card_cvv(data.CARD_CODE)
         self.page.submit_card()
-        payment_method = self.page.get_payment_method_text()
-        assert payment_method == "Cartão", f"Método de pagamento incorreto exibido: {payment_method}"
+        assert self.page.get_payment_method_text() == "Cartão", f"Método de pagamento incorreto exibido: {payment_method}"
 
     def test_comment_for_driver(self):
-        # Adicionar em S8
-        print("Função criada para comentar para o motorista")
-        pass
+        # Teste anterior
+        self.page.enter_from_location(data.ADDRESS_FROM)
+        self.page.enter_to_location(data.ADDRESS_TO)
+        self.page.select_personal_mode()
+        self.page.select_taxi_type()
+        self.page.click_call_taxi()
+        self.page.select_comfort_plan()
+        self.page.click_phone_field()
+        self.page.enter_phone_number(data.PHONE_NUMBER)
+        self.page.submit_phone()
+        sms_code = helpers.retrieve_phone_code(self.driver)
+        self.page.enter_sms_code(sms_code)
+        self.page.confirm_sms_code()
+        self.page.open_payment_field()
+        self.page.choose_add_card()
+        self.page.enter_card_number(data.CARD_NUMBER)
+        self.page.enter_card_cvv(data.CARD_CODE)
+        self.page.submit_card()
+
+        # Teste para adicionar comentário
+        self.page.comment_for_driver(data.MESSAGE_FOR_DRIVER)
+        assert self.page.get_comment_for_driver() == data.MESSAGE_FOR_DRIVER, "Mensagem ao motorista incorreta."
 
     def test_order_blanket_and_handkerchiefs(self):
         # Adicionar em S8
