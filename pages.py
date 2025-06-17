@@ -23,9 +23,11 @@ class UrbanRoutesPage:
     CARD_NUMBER_INPUT = (By.ID, "number")
     CARD_CODE_INPUT = (By.XPATH, '//div[contains(@class, "section") and contains(@class, "active")]//input[@id="code"]')
     CARD_ADD_BUTTON = (By.XPATH, '//button[@type="submit" and text()="Adicionar"]')
+    MODAL_CLOSE_BUTTON = (By.CSS_SELECTOR, "div.modal div.section.active > button.close-button.section-close")
     PAYMENT_FIELD_VALUE = (By.CSS_SELECTOR, "div.pp-button.filled div.pp-value-text")
     COMMENT_INPUT = (By.ID, "comment")
-    BLANKET_OPTION = (By.XPATH, '//div[@class="r-sw-label" and text()="Cobertor e lençóis"]/following-sibling::div//input[@type="checkbox"]')
+    BLANKET_OPTION = ( By.XPATH, '//div[@class="r-sw-label" and text()="Cobertor e lençóis"]/following-sibling::div[@class="r-sw"]//span[contains(@class, "slider")]')
+    BLANKET_CHECKBOX = (By.XPATH, '//div[@class="r-sw-label" and text()="Cobertor e lençóis"]/following-sibling::div[@class="r-sw"]//input[@type="checkbox"]')
     ICE_CREAM_OPTION = (By.XPATH, '//div[@class="r-counter-label" and text()="Sorvete"]/following-sibling::div//div[@class="counter-plus"]')
     FINAL_CALL_TAXI_BUTTON = (By.XPATH, '//button[@class="smart-button"]')
     SEARCH_MODAL = (By.XPATH, '//div[contains(@class, "searching-car")]')
@@ -99,7 +101,7 @@ class UrbanRoutesPage:
         phone_field = self.wait.until(EC.visibility_of_element_located(self.PHONE_FIELD_AFTER))
         return phone_field.text.strip()
 
-    # FILL PHONE NUMBER
+    # FILL CARD NUMBER
     def open_payment_field(self):
         payment = self.wait.until(EC.element_to_be_clickable(self.PAYMENT_FIELD))
         payment.click()
@@ -121,6 +123,10 @@ class UrbanRoutesPage:
         add_btn = self.wait.until(EC.element_to_be_clickable(self.CARD_ADD_BUTTON))
         add_btn.click()
 
+    def close_payment_method_modal(self):
+        close_btn = self.wait.until(EC.element_to_be_clickable(self.MODAL_CLOSE_BUTTON))
+        close_btn.click()
+
     def get_payment_method_text(self):
         pay_field = self.wait.until(EC.visibility_of_element_located(self.PAYMENT_FIELD_VALUE))
         return pay_field.text
@@ -134,11 +140,15 @@ class UrbanRoutesPage:
         comment_input = self.wait.until(EC.visibility_of_element_located(self.COMMENT_INPUT))
         return comment_input.get_attribute("value")
 
-    # TEST
+    # TEST ORDER BLANKET
     def order_blanket_and_handkerchiefs(self):
-        checkbox = self.wait.until(EC.element_to_be_clickable(self.BLANKET_OPTION))
-        checkbox.click()
-        return checkbox
+        slider = self.wait.until(EC.element_to_be_clickable(self.BLANKET_OPTION))
+        slider.click()
+        return slider
+
+    def is_blanket_and_handkerchiefs_selected(self):
+        checkbox = self.wait.until(EC.presence_of_element_located(self.BLANKET_CHECKBOX))
+        return checkbox.is_selected()
 
     # TEST
     def order_ice_creams(self, quantity=2):
