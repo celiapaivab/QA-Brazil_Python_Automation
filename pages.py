@@ -2,6 +2,7 @@ from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import data
 
 class UrbanRoutesPage:
     # Localizadores
@@ -15,22 +16,23 @@ class UrbanRoutesPage:
     PHONE_FIELD = (By.CSS_SELECTOR, "div.np-button > div.np-text")
     PHONE_INPUT = (By.ID, "phone")
     PHONE_SUBMIT = (By.XPATH, '//button[@type="submit" and text()="Próximo"]')
-    SMS_CODE_INPUT = (By.XPATH, '//div[contains(@class, "modal")]//div[contains(@class, "section") and contains(@class, "active")]//input[@id="code"]')
+    SMS_CODE_INPUT = (By.XPATH, '//div[contains(@class, "modal")]//div[contains(@class, "section") and contains(@class, "active")]//input[@id="code"]')#ID igual ao card code
     SMS_CONFIRM = (By.XPATH, '//button[@type="submit" and text()="Confirmar"]')
     PHONE_FIELD_AFTER = (By.CSS_SELECTOR, "div.np-button.filled > div.np-text")
     PAYMENT_FIELD = (By.CSS_SELECTOR, 'div.pp-button div.pp-text')
     PAYMENT_CARD_OPTION = (By.XPATH, '//div[@class="pp-title" and text()="Adicionar cartão"]')
     CARD_NUMBER_INPUT = (By.ID, "number")
-    CARD_CODE_INPUT = (By.XPATH, '//div[contains(@class, "section") and contains(@class, "active")]//input[@id="code"]')
+    CARD_CODE_INPUT = (By.XPATH, '//div[contains(@class, "section") and contains(@class, "active")]//input[@id="code"]') #ID igual ao SMS
     CARD_ADD_BUTTON = (By.XPATH, '//button[@type="submit" and text()="Adicionar"]')
-    MODAL_CLOSE_BUTTON = (By.CSS_SELECTOR, "div.modal div.section.active > button.close-button.section-close")
+    CLOSE_MODAL_BUTTON = (By.CSS_SELECTOR, ".payment-picker.open .section.active .close-button.section-close")
     PAYMENT_FIELD_VALUE = (By.CSS_SELECTOR, "div.pp-button.filled div.pp-value-text")
     COMMENT_INPUT = (By.ID, "comment")
-    BLANKET_OPTION = ( By.XPATH, '//div[@class="r-sw-label" and text()="Cobertor e lençóis"]/following-sibling::div[@class="r-sw"]//span[contains(@class, "slider")]')
-    BLANKET_CHECKBOX = (By.XPATH, '//div[@class="r-sw-label" and text()="Cobertor e lençóis"]/following-sibling::div[@class="r-sw"]//input[@type="checkbox"]')
-    ICE_CREAM_OPTION = (By.XPATH, '//div[@class="r-counter-label" and text()="Sorvete"]/following-sibling::div//div[@class="counter-plus"]')
+    BLANKET_OPTION = ( By.XPATH, '//div[contains(@class, "r-sw-container")]//div[contains(@class, "r-sw")]//div[contains(@class, "switch")]//span[contains(@class, "slider")]')
+    BLANKET_CHECKBOX = (By.XPATH, '//div[contains(@class, "r-sw-container")]//div[contains(@class, "r-sw")]//div[contains(@class, "switch")]//input[@type="checkbox"]')
+    ICE_CREAM_OPTION = (By.XPATH, '(//div[contains(@class, "r-group-items")]//div[contains(@class, "r-counter-container")])[1]//div[contains(@class, "counter-plus")]')
+    ICE_CREAM_COUNTER = (By.XPATH, '(//div[contains(@class, "r-group-items")]//div[contains(@class, "r-counter-container")])[1]//div[contains(@class, "counter-value")]')
     FINAL_CALL_TAXI_BUTTON = (By.XPATH, '//button[@class="smart-button"]')
-    SEARCH_MODAL = (By.XPATH, '//div[contains(@class, "searching-car")]')
+    SEARCH_MODAL = (By.CSS_SELECTOR, ".order.shown")
 
     def __init__(self, driver):
         self.driver = driver
@@ -39,24 +41,27 @@ class UrbanRoutesPage:
     # SET ROUTE
     def enter_from_location(self, from_location):
         from_input = self.wait.until(EC.visibility_of_element_located(self.FROM_INPUT))
+        from_input.clear()
         from_input.send_keys(from_location)
 
     def enter_to_location(self, to_location):
         to_input = self.wait.until(EC.visibility_of_element_located(self.TO_INPUT))
+        to_input.clear()
         to_input.send_keys(to_location)
 
     def get_from_location_value(self):
-        from_input = self.driver.find_element(*self.FROM_INPUT)
+        from_input = self.wait.until(EC.visibility_of_element_located(self.FROM_INPUT))
         return from_input.get_attribute("value")
 
     def get_to_location_value(self):
-        to_input = self.driver.find_element(*self.TO_INPUT)
+        to_input = self.wait.until(EC.visibility_of_element_located(self.TO_INPUT))
         return to_input.get_attribute("value")
 
     # SELECT PLAN
     def select_personal_mode(self):
-        personal = self.wait.until(EC.element_to_be_clickable(self.PERSONAL_OPTION))
-        personal.click()
+        personal = self.wait.until(EC.visibility_of_element_located(self.PERSONAL_OPTION))
+        if "active" not in personal.get_attribute("class"):
+            personal.click()
 
     def select_taxi_type(self):
         taxi_div = self.wait.until(EC.visibility_of_element_located(self.TAXI_OPTION))
@@ -73,8 +78,8 @@ class UrbanRoutesPage:
             comfort.click()
 
     def get_selected_plan(self):
-        comfort_title = self.driver.find_element(*self.COMFORT_TITLE)
-        return comfort_title.text
+        comfort_title = self.wait.until(EC.visibility_of_element_located(self.COMFORT_TITLE))
+        return comfort_title.text.strip()
 
     # FILL PHONE NUMBER
     def click_phone_field(self):
@@ -123,13 +128,13 @@ class UrbanRoutesPage:
         add_btn = self.wait.until(EC.element_to_be_clickable(self.CARD_ADD_BUTTON))
         add_btn.click()
 
-    def close_payment_method_modal(self):
-        close_btn = self.wait.until(EC.element_to_be_clickable(self.MODAL_CLOSE_BUTTON))
+    def close_payment_modal(self):
+        close_btn = self.wait.until(EC.element_to_be_clickable(self.CLOSE_MODAL_BUTTON))
         close_btn.click()
 
     def get_payment_method_text(self):
         pay_field = self.wait.until(EC.visibility_of_element_located(self.PAYMENT_FIELD_VALUE))
-        return pay_field.text
+        return pay_field.text.strip()
 
     # TEST COMMENT
     def comment_for_driver(self, comment):
@@ -144,19 +149,22 @@ class UrbanRoutesPage:
     def order_blanket_and_handkerchiefs(self):
         slider = self.wait.until(EC.element_to_be_clickable(self.BLANKET_OPTION))
         slider.click()
-        return slider
 
     def is_blanket_and_handkerchiefs_selected(self):
         checkbox = self.wait.until(EC.presence_of_element_located(self.BLANKET_CHECKBOX))
         return checkbox.is_selected()
 
-    # TEST
-    def order_ice_creams(self, quantity=2):
+    # TEST ORDER ICE CREAM
+    def order_ice_creams(self, quantity):
+        plus_btn = self.wait.until(EC.element_to_be_clickable(self.ICE_CREAM_OPTION))
         for _ in range(quantity):
-            plus_btn = self.wait.until(EC.element_to_be_clickable(self.ICE_CREAM_OPTION))
             plus_btn.click()
 
-    # TEST
+    def get_ice_cream_count(self):
+        counter = self.wait.until(EC.visibility_of_element_located(self.ICE_CREAM_COUNTER))
+        return int(counter.text.strip())
+
+    # TEST SEARCH CAR
     def click_final_call_taxi_button(self):
         call_btn = self.wait.until(EC.element_to_be_clickable(self.FINAL_CALL_TAXI_BUTTON))
         call_btn.click()
