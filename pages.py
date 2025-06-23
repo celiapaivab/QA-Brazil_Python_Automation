@@ -16,7 +16,7 @@ class UrbanRoutesPage:
     PHONE_FIELD = (By.CSS_SELECTOR, "div.np-button > div.np-text")
     PHONE_INPUT = (By.ID, "phone")
     PHONE_SUBMIT = (By.XPATH, '//button[@type="submit" and text()="Próximo"]')
-    SMS_CODE_INPUT = (By.XPATH, '//div[contains(@class, "modal")]//div[contains(@class, "section") and contains(@class, "active")]//input[@id="code"]')#ID igual ao card code
+    SMS_CODE_INPUT = (By.XPATH, '//div[contains(@class, "modal")]//div[contains(@class, "section") and contains(@class, "active")]//input[@id="code"]') #ID igual ao card code
     SMS_CONFIRM = (By.XPATH, '//button[@type="submit" and text()="Confirmar"]')
     PHONE_FIELD_AFTER = (By.CSS_SELECTOR, "div.np-button.filled > div.np-text")
     PAYMENT_FIELD = (By.CSS_SELECTOR, 'div.pp-button div.pp-text')

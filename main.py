@@ -1,3 +1,5 @@
+import time
+
 import data
 import helpers
 from selenium import webdriver
@@ -18,6 +20,18 @@ class TestUrbanRoutes:
         capabilities["goog:loggingPrefs"] = {'performance': 'ALL'}
         cls.driver = webdriver.Chrome()
 
+    def setup_method(self):
+        self.page = UrbanRoutesPage(self.driver)
+
+    def setup_common_route_flow(self):
+        self.driver.get(data.URBAN_ROUTES_URL)
+        self.page.enter_from_location(data.ADDRESS_FROM)
+        self.page.enter_to_location(data.ADDRESS_TO)
+        self.page.select_personal_mode()
+        self.page.select_taxi_type()
+        self.page.click_call_taxi()
+        self.page.select_comfort_plan()
+
     def test_set_route(self):
         self.driver.get(data.URBAN_ROUTES_URL)
         self.page = UrbanRoutesPage(self.driver)
@@ -27,29 +41,13 @@ class TestUrbanRoutes:
         assert self.page.get_to_location_value() == data.ADDRESS_TO, "Endereço de destino incorreto."
 
     def test_select_plan(self):
-        # Teste selecionar rota
-        self.driver.get(data.URBAN_ROUTES_URL)
-        self.page = UrbanRoutesPage(self.driver)
-        self.page.enter_from_location(data.ADDRESS_FROM)
-        self.page.enter_to_location(data.ADDRESS_TO)
-
-        # Teste para selecionar o plano
-        self.page.select_personal_mode()
-        self.page.select_taxi_type()
-        self.page.click_call_taxi()
-        self.page.select_comfort_plan()
+        # Teste selecionar rota e plano
+        self.setup_common_route_flow()
         assert self.page.get_selected_plan() == "Comfort", "O plano Comfort não foi selecionado corretamente."
 
     def test_fill_phone_number(self):
         # Teste selecionar rota e plano
-        self.driver.get(data.URBAN_ROUTES_URL)
-        self.page = UrbanRoutesPage(self.driver)
-        self.page.enter_from_location(data.ADDRESS_FROM)
-        self.page.enter_to_location(data.ADDRESS_TO)
-        self.page.select_personal_mode()
-        self.page.select_taxi_type()
-        self.page.click_call_taxi()
-        self.page.select_comfort_plan()
+        self.setup_common_route_flow()
 
         # Teste para preencher o  número de telefone
         self.page.click_phone_field()
@@ -63,14 +61,7 @@ class TestUrbanRoutes:
 
     def test_fill_card(self):
         # Teste selecionar rota e plano
-        self.driver.get(data.URBAN_ROUTES_URL)
-        self.page = UrbanRoutesPage(self.driver)
-        self.page.enter_from_location(data.ADDRESS_FROM)
-        self.page.enter_to_location(data.ADDRESS_TO)
-        self.page.select_personal_mode()
-        self.page.select_taxi_type()
-        self.page.click_call_taxi()
-        self.page.select_comfort_plan()
+        self.setup_common_route_flow()
 
         # Teste para preencher o cartão
         self.page.open_payment_field()
@@ -79,19 +70,11 @@ class TestUrbanRoutes:
         self.page.enter_card_cvv(data.CARD_CODE)
         self.page.submit_card()
         self.page.close_payment_modal()
-
         assert self.page.get_payment_method_text() == "Cartão", "Método de pagamento incorreto."
 
     def test_comment_for_driver(self):
         # Teste selecionar rota e plano
-        self.driver.get(data.URBAN_ROUTES_URL)
-        self.page = UrbanRoutesPage(self.driver)
-        self.page.enter_from_location(data.ADDRESS_FROM)
-        self.page.enter_to_location(data.ADDRESS_TO)
-        self.page.select_personal_mode()
-        self.page.select_taxi_type()
-        self.page.click_call_taxi()
-        self.page.select_comfort_plan()
+        self.setup_common_route_flow()
 
         # Teste para adicionar comentário
         self.page.comment_for_driver(data.MESSAGE_FOR_DRIVER)
@@ -99,14 +82,7 @@ class TestUrbanRoutes:
 
     def test_order_blanket_and_handkerchiefs(self):
         # Teste selecionar rota e plano
-        self.driver.get(data.URBAN_ROUTES_URL)
-        self.page = UrbanRoutesPage(self.driver)
-        self.page.enter_from_location(data.ADDRESS_FROM)
-        self.page.enter_to_location(data.ADDRESS_TO)
-        self.page.select_personal_mode()
-        self.page.select_taxi_type()
-        self.page.click_call_taxi()
-        self.page.select_comfort_plan()
+        self.setup_common_route_flow()
 
         # Teste para pedir cobertor e lenços
         self.page.order_blanket_and_handkerchiefs()
@@ -114,14 +90,7 @@ class TestUrbanRoutes:
 
     def test_order_2_ice_creams(self):
         # Teste selecionar rota e plano
-        self.driver.get(data.URBAN_ROUTES_URL)
-        self.page = UrbanRoutesPage(self.driver)
-        self.page.enter_from_location(data.ADDRESS_FROM)
-        self.page.enter_to_location(data.ADDRESS_TO)
-        self.page.select_personal_mode()
-        self.page.select_taxi_type()
-        self.page.click_call_taxi()
-        self.page.select_comfort_plan()
+        self.setup_common_route_flow()
 
         # Teste para adicionar sorvetes
         self.page.order_ice_creams(2)
@@ -130,16 +99,9 @@ class TestUrbanRoutes:
 
     def test_car_search_model_appears(self):
         # Teste selecionar rota e plano
-        self.driver.get(data.URBAN_ROUTES_URL)
-        self.page = UrbanRoutesPage(self.driver)
-        self.page.enter_from_location(data.ADDRESS_FROM)
-        self.page.enter_to_location(data.ADDRESS_TO)
-        self.page.select_personal_mode()
-        self.page.select_taxi_type()
-        self.page.click_call_taxi()
-        self.page.select_comfort_plan()
-        self.page.click_phone_field()
+        self.setup_common_route_flow()
         # Teste para preencher o  número de telefone
+        self.page.click_phone_field()
         self.page.enter_phone_number(data.PHONE_NUMBER)
         self.page.submit_phone()
         sms_code = helpers.retrieve_phone_code(self.driver)
