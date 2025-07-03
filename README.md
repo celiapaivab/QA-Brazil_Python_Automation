@@ -35,8 +35,8 @@ Este projeto foi desenvolvido dentro da Sprint 7 e 8 do curso de QA, e contém u
 
 1️⃣ Clone o repositório:
 ```bash
-git clone <seu-repo-url>
-cd urban-routes-tests
+git clone https://github.com/celiapaivab/QA-Brazil_Python_Automation
+cd QA-Brazil_Python_Automation
 ```
 
 2️⃣ Crie e ative o ambiente virtual:
