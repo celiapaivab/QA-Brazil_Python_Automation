@@ -4,6 +4,8 @@
 ![Framework](https://img.shields.io/badge/Selenium-WebDriver-green)
 ![Linguagem](https://img.shields.io/badge/Python-3.x-yellow)
 ![Padrão](https://img.shields.io/badge/POM-Page%20Object%20Model-lightgrey)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/celia-bruno)
+
 
 ---
 
