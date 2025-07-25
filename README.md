@@ -1,29 +1,31 @@
-# Testes Automatizados - Urban Routes
+# Automated Tests – Urban Routes
 
-![QA](https://img.shields.io/badge/Testes-Automatizados-blue)
+![QA](https://img.shields.io/badge/Tests-Automated-blue)
 ![Framework](https://img.shields.io/badge/Selenium-WebDriver-green)
-![Linguagem](https://img.shields.io/badge/Python-3.x-yellow)
-![Padrão](https://img.shields.io/badge/POM-Page%20Object%20Model-lightgrey)
+![Language](https://img.shields.io/badge/Python-3.x-yellow)
+![Pattern](https://img.shields.io/badge/POM-Page%20Object%20Model-lightgrey)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/celia-bruno)
 
+---
+
+## 📌 Project Overview
+
+This project was developed during **Sprints 7 and 8** of the QA course as part of a hands-on learning experience in test automation. It features a comprehensive **automated test suite** for the **Urban Routes** application, which simulates a ride-request system.  
+
+The automation is implemented using **Selenium WebDriver** with **Python** and follows the **Page Object Model (POM)** design pattern to ensure code maintainability and scalability. The test suite covers critical user flows, validating the functionality and stability of key features through end-to-end testing.
+
 
 ---
 
-## 📌 Sobre o Projeto
+## 🎯 Project Goal
 
-Este projeto foi desenvolvido dentro da Sprint 7 e 8 do curso de QA, e contém uma suíte de testes automatizados para o sistema *Urban Routes*, utilizando **Selenium WebDriver**, **Python**, e o padrão **Page Object Model (POM)**.
-
----
-
-## 🎯 Objetivo do Projeto
-
-- Validar de forma automatizada o fluxo de solicitação de corrida no Urban Routes  
-- Implementar boas práticas de automação com Selenium e POM  
-- Aumentar a eficiência e repetibilidade dos testes de interface web
+- Validate the Urban Routes ride request flow through automated tests  
+- Apply best practices in automation using Selenium and POM  
+- Increase efficiency and repeatability for web UI tests
 
 ---
 
-## 🔧 Tecnologias e Ferramentas
+## 🔧 Technologies and Tools
 
 - **Python**  
 - **Selenium WebDriver**  
@@ -33,15 +35,15 @@ Este projeto foi desenvolvido dentro da Sprint 7 e 8 do curso de QA, e contém u
 
 ---
 
-## ▶️ Como executar
+## ▶️ How to Run
 
-1️⃣ Clone o repositório:
+1️⃣ Clone the repository:
 ```bash
 git clone https://github.com/celiapaivab/QA-Brazil_Python_Automation
 cd QA-Brazil_Python_Automation
 ```
 
-2️⃣ Crie e ative o ambiente virtual:
+2️⃣ Create and activate a virtual environment:
 ```bash
 python -m venv .venv
 # Windows:
@@ -50,55 +52,48 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
-3️⃣ Instale as dependências:
+3️⃣ Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-4️⃣ Execute os testes:
+4️⃣ Run the tests:
 ```bash
 pytest test_urban_routes.py
 ```
 
 ---
 
-## 🧾 Resultado
+## 🧾 Results
 
-- Automação bem-sucedida do fluxo de solicitação de corrida no Urban Routes;
-- Testes cobriram etapas críticas de cadastro de rota, plano, telefone, pagamento, comentários e itens adicionais;
-- Fluxo completo finalizado com busca de carro iniciada;
-- Scripts organizados por páginas (POM) e com boas práticas de estabilidade.
-
----
-
-## 📚 Aprendizados
-
-- Prática de automação de testes ponta a ponta usando **Selenium WebDriver** e **Python**;
-- Aplicação do **Page Object Model (POM)** para melhorar a manutenção e a legibilidade do código;
-- Uso de **WebDriverWait** para lidar com elementos dinâmicos;
-- Estruturação modular dos testes automatizados.
+- Successfully automated the ride request flow in Urban Routes  
+- Tests covered critical steps including route setup, plan selection, phone number input, payment, comments, and additional items  
+- Complete flow finalized with car search initiation  
+- Scripts organized by pages (POM) with best practices for stability and maintainability
+- No real bugs were detected during execution, as this project’s primary goal was to design and validate the automation framework for practice purposes only
 
 ---
 
-## 💡 Melhorias Futuras
+## 📚 What I Learned
 
-- Incluir mais cenários alternativos (erros de preenchimento, cancelamento de rota);
-- Implementar testes em múltiplos navegadores (cross-browser);
-- Integrar a suíte de testes a pipelines de CI/CD (ex: GitHub Actions);
-- Adicionar geração automática de relatórios de execução.
-
----
-
-## ✅ Observações
-
-- É necessário que o servidor **Urban Routes** esteja ativo para que os testes funcionem corretamente.
-- O projeto utiliza os logs de performance do Chrome para capturar automaticamente o código SMS.
-- Recomenda-se o uso do **ChromeDriver** compatível com a versão do navegador instalado na máquina.
+- Hands-on practice with end-to-end test automation using **Selenium WebDriver** and **Python**  
+- Application of the **Page Object Model (POM)** to improve code maintainability and readability  
+- Use of **WebDriverWait** to handle dynamic elements reliably  
+- Modular structure for scalable and maintainable automated tests
 
 ---
 
-## 🇺🇸 Project Summary
+## 💡 Future Improvements
 
-This project automates the main ride request flow of **Urban Routes**, using **Selenium WebDriver**, **Python**, and the **Page Object Model** pattern.  
-The suite covers critical steps: setting the route, selecting a plan, adding phone and payment method, driver comments, extra items, and starting the car search.  
-All scripts are modular and follow best practices for maintainability and stability.
+- Add more alternative scenarios (input errors, route cancellation, edge cases)  
+- Implement cross-browser testing  
+- Integrate the test suite with CI/CD pipelines (e.g., GitHub Actions)  
+- Add automatic generation of test execution reports
+
+---
+
+## ✅ Notes
+
+- The **Urban Routes** server must be running for the tests to execute correctly.  
+- The project uses Chrome performance logs to automatically capture the SMS code.  
+- It is recommended to use a **ChromeDriver** version that matches the installed Chrome browser.
